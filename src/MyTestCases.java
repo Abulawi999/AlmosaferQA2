@@ -1,10 +1,12 @@
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -14,12 +16,12 @@ public class MyTestCases {
 	WebDriver driver = new ChromeDriver();
 	String WebsiteURL = "https://global.almosafer.com/en";
 //	String WebsiteURL = "https://global.almosafer.com/ar"; //just try
-	
-	Random rand = new Random(); 
 
+	Random rand = new Random();
 
 	@BeforeTest
 	public void mySetup() {
+
 		driver.manage().window().maximize();
 		driver.get(WebsiteURL);
 
@@ -69,10 +71,17 @@ public class MyTestCases {
 	@Test(priority = 4)
 	public void CheckQitafLogoIsThereInTheFoter() {
 
-		boolean ActualLogo = driver.findElement(By.cssSelector(".sc-bdVaJa.bxRSiR.sc-ciodno.lkfeIG")).isDisplayed();
-		boolean ExpectedLogo = true;
+		WebElement Thefooter = driver.findElement(By.tagName("footer"));
+		boolean ActualResult = Thefooter.findElement(By.cssSelector(".sc-bdVaJa.bxRSiR.sc-ciodno.lkfeIG"))
+				.isDisplayed();
+		boolean ExpectedResult = true;
 
-		Assert.assertEquals(ActualLogo, ExpectedLogo);
+		Assert.assertEquals(ActualResult, ExpectedResult);
+
+//		boolean ActualLogo = driver.findElement(By.cssSelector(".sc-bdVaJa.bxRSiR.sc-ciodno.lkfeIG")).isDisplayed();
+//		boolean ExpectedLogo = true;
+//
+//		Assert.assertEquals(ActualLogo, ExpectedLogo);
 	}
 
 	@Test(priority = 5)
@@ -104,9 +113,9 @@ public class MyTestCases {
 		Assert.assertEquals(ActualDepature, ExpectedDepature);
 
 	}
-	
+
 	@Test(priority = 7)
-	public void CheckreturnDate() {
+	public void CheckReturnDate() {
 
 		int today = LocalDate.now().getDayOfMonth();
 //		int Tomorrow = LocalDate.now().plusDays(1).getDayOfMonth();
@@ -116,35 +125,121 @@ public class MyTestCases {
 //		System.out.println(Tomorrow);
 //		System.out.println(DayAfterTomorrow);
 
-		String ActualReturn = driver.findElement(By.cssSelector("div[class='sc-OxbzP sc-bYnzgO bojUIa'] span[class='sc-fvLVrH hNjEjT']")).getText();
+		String ActualReturn = driver
+				.findElement(By.cssSelector("div[class='sc-OxbzP sc-bYnzgO bojUIa'] span[class='sc-fvLVrH hNjEjT']"))
+				.getText();
 		String ExpectedReturn = Integer.toString(DayAfterTomorrow);
 		Assert.assertEquals(ActualReturn, ExpectedReturn);
 
 	}
-	
+
 	@Test(priority = 8)
-	public void RandomlyChangeTheLanguage() {
-		
-		String [] myWebsites = {"https://www.almosafer.com/ar","https://www.almosafer.com/en"};
-		
+	public void RandomlyChangeTheLanguage() throws InterruptedException {
+
+		String[] EnglishCitiesNames = { "jeddah", "riyadh", "dubai" };
+		String[] ArabicCitiesNames = { "دبي", "جدة" };
+
+		int randomArabicCity = rand.nextInt(ArabicCitiesNames.length);
+		int randomEnglishCity = rand.nextInt(EnglishCitiesNames.length);
+
+		String[] myWebsites = { "https://www.almosafer.com/ar", "https://www.almosafer.com/en" };
+
 		int randomIndex = rand.nextInt(myWebsites.length);
-		
+
 		driver.get(myWebsites[randomIndex]);
-		
-		if(driver.getCurrentUrl().equals("https://www.almosafer.com/ar")) {
+
+		WebElement HotelTab = driver.findElement(By.id("uncontrolled-tab-example-tab-hotels"));
+
+		HotelTab.click();
+
+		WebElement HotelSearchBar = driver.findElement(By.cssSelector(".sc-phbroq-2.uQFRS.AutoComplete__Input"));
+
+		if (driver.getCurrentUrl().equals("https://www.almosafer.com/ar")) {
 			String ActualLaguage = driver.findElement(By.tagName("html")).getAttribute("lang");
 			String ExpectedLanguage = "ar";
 
 			Assert.assertEquals(ActualLaguage, ExpectedLanguage);
-		}else {
+			HotelSearchBar.sendKeys(ArabicCitiesNames[randomArabicCity]);
+		} else {
 			String ActualLaguage = driver.findElement(By.tagName("html")).getAttribute("lang");
 			String ExpectedLanguage = "en";
 
 			Assert.assertEquals(ActualLaguage, ExpectedLanguage);
+			HotelSearchBar.sendKeys(EnglishCitiesNames[randomEnglishCity]);
 		}
 
-	}  
-	
-	
+		Thread.sleep(2000);
 
+		WebElement CitiesList = driver.findElement(By.cssSelector(".sc-phbroq-4.gGwzVo.AutoComplete__List"));
+
+		WebElement SelectNumerOfVistor = driver.findElement(By.cssSelector(".sc-tln3e3-1.gvrkTi"));
+
+		Select select = new Select(SelectNumerOfVistor);
+
+		int randomVistorNumber = rand.nextInt(2);
+
+		select.selectByIndex(randomVistorNumber);
+
+		WebElement SearchButton = driver.findElement(By.xpath("//button[@data-testid='HotelSearchBox__SearchButton']"));
+		SearchButton.click();
+
+		Thread.sleep(35000);
+	}
+
+	@Test(priority = 9)
+	public void CheckThatThePageIsFullyLoaded() {
+		WebElement SearchResult = driver.findElement(By.xpath("//span[@data-testid='srp_properties_found']"));
+
+		boolean ActualResult = SearchResult.getText().contains("found") || SearchResult.getText().contains("مكان");
+		boolean ExpectedResult = true;
+
+		Assert.assertEquals(ActualResult, ExpectedResult);
+
+	}
+
+	@Test(priority = 10)
+	public void CheckTheSortOption() throws InterruptedException {
+		Thread.sleep(15000);
+
+		WebElement SortOptin = driver.findElement(By.xpath("//div[@data-testid='srp_sort_LOWEST_PRICE']"));
+		SortOptin.click();
+
+		Thread.sleep(2000);
+
+		WebElement Container = driver.findElement(By.xpath("//*[@id=\"__next\"]/div[2]/div[5]/div"));
+
+		if (driver.getCurrentUrl().contains("en")) {
+			List<WebElement> priceList = Container.findElements(By.cssSelector(
+					".MuiTypography-root.MuiTypography-heading3SemBld.__ds__comp.undefined.muiltr-18vmb2l"));
+			int lowestPrice = Integer.parseInt(priceList.get(0).getText().replace("SAR ", ""));
+			int HighestPrice = Integer.parseInt(priceList.get(priceList.size() - 1).getText().replace("SAR ", ""));
+			System.out.println(lowestPrice);
+			System.out.println(HighestPrice);
+
+			boolean ActualValue = lowestPrice < HighestPrice;
+			boolean ExpectedValue = true;
+
+			System.out.println(ActualValue);
+			System.out.println(ExpectedValue);
+
+			Assert.assertEquals(ActualValue, ExpectedValue);
+		} else {
+			List<WebElement> priceList = Container.findElements(By.cssSelector(
+					".MuiTypography-root.MuiTypography-heading3SemBld.__ds__comp.undefined.muirtl-1l5b3qq"));
+			int lowestPrice = Integer.parseInt(priceList.get(0).getText().replace("ر.س. ", ""));
+			System.out.println();
+			int HighestPrice = Integer.parseInt(priceList.get(priceList.size() - 1).getText().replace("ر.س. ", ""));
+			System.out.println(lowestPrice);
+			System.out.println(HighestPrice);
+
+			boolean ActualValue = lowestPrice < HighestPrice;
+			boolean ExpectedValue = true;
+
+			System.out.println(ActualValue);
+			System.out.println(ExpectedValue);
+
+			Assert.assertEquals(ActualValue, ExpectedValue);
+
+		}
+	}
 }

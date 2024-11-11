@@ -15,20 +15,15 @@ public class MyTestCases extends Parameters {
 
 	@BeforeTest
 	public void mySetup() {
-
+		
 		MySetupToEnterTheWebsite();
-
 	}
 
 	@Test(priority = 1)
 	public void CheckTheEnglishLanguageIsDefault() {
 
 		String ActualLanguage = driver.findElement(By.tagName("html")).getAttribute("lang");
-
 		Assert.assertEquals(ActualLanguage, ExpectedLanguage);
-
-	
-
 	}
 
 	@Test(priority = 2)
@@ -36,31 +31,25 @@ public class MyTestCases extends Parameters {
 
 		String ActualCurrency = driver.findElement(By.xpath("//button[@data-testid='Header__CurrencySelector']"))
 				.getText();
-
 		Assert.assertEquals(ActualCurrency, ExpectedCurrency);
-
-		
-
 	}
 
 	@Test(priority = 3)
 	public void CheckContactNumber() {
 
 		String ActualcontactNum = driver.findElement(By.cssSelector(".sc-hUfwpO.bWcsTG")).getText();
-
 		Assert.assertEquals(ActualcontactNum, ExpectedcontactNum);
-
 	}
 
 	@Test(priority = 4)
 	public void CheckQitafLogoIsThereInTheFoter() {
 
 		WebElement Thefooter = driver.findElement(By.tagName("footer"));
+		
 		boolean ActualResult = Thefooter.findElement(By.cssSelector(".sc-bdVaJa.bxRSiR.sc-ciodno.lkfeIG"))
 				.isDisplayed();
-
+		
 		Assert.assertEquals(ActualResult, ExpectedResultForQitafLogo);
-
 	}
 
 	@Test(priority = 5)
@@ -78,8 +67,8 @@ public class MyTestCases extends Parameters {
 		String ActualDepature = driver
 				.findElement(By.cssSelector("div[class='sc-OxbzP sc-lnrBVv gKbptE'] span[class='sc-fvLVrH hNjEjT']"))
 				.getText();
+		
 		Assert.assertEquals(ActualDepature, ExpectedDepature);
-
 	}
 
 	@Test(priority = 7)
@@ -88,8 +77,8 @@ public class MyTestCases extends Parameters {
 		String ActualReturn = driver
 				.findElement(By.cssSelector("div[class='sc-OxbzP sc-bYnzgO bojUIa'] span[class='sc-fvLVrH hNjEjT']"))
 				.getText();
+		
 		Assert.assertEquals(ActualReturn, ExpectedReturn);
-
 	}
 
 	@Test(priority = 8)
@@ -102,7 +91,6 @@ public class MyTestCases extends Parameters {
 		CheckTheWebsiteLanguageToEnterTheCityName(HotelSearchBar);
 
 		EnterNumberOfVistorsAfterClickOnTheFirstCity();
-
 	}
 
 	@Test(priority = 9)
@@ -112,7 +100,6 @@ public class MyTestCases extends Parameters {
 		boolean ActualResult = SearchResult.getText().contains("found") || SearchResult.getText().contains("مكان");
 
 		Assert.assertEquals(ActualResult, ExpectedValueForFinshingSearchAboutHotel);
-
 	}
 
 	@Test(priority = 10)

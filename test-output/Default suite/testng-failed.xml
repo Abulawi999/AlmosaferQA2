@@ -5,9 +5,9 @@
     <classes>
       <class name="MyTestCases">
         <methods>
-          <include name="CheckDepatureDate"/>
+          <include name="CheckTheSortOption"/>
           <include name="mySetup"/>
-          <include name="CheckReturnDate"/>
+          <include name="RandomlyChangeTheLanguage"/>
         </methods>
       </class> <!-- MyTestCases -->
     </classes>
